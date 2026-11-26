@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyConnect</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f5fb;color:#26334a}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+#loginPage{
+ min-height:100vh;display:flex;align-items:center;
+ justify-content:center;padding:20px;
+ background:linear-gradient(135deg,#243b80,#647bd1)
+}
+.login-card{
+ background:white;width:100%;max-width:390px;
+ padding:30px;border-radius:18px;text-align:center;
+ box-shadow:0 8px 30px #17265340
+}
+.login-card h1{color:#263b80;margin-bottom:5px}
+.login-card p{color:#788196}
+.login-card input{
+ width:100%;padding:14px;border:1px solid #ddd;
+ border-radius:9px;margin:15px 0;font-size:16px
+}
+.primary{
+ background:#263b80;color:white;border:0;
+ padding:12px 18px;border-radius:8px
+}
+.full{width:100%}
+
+/* MAIN APP */
+header{
+ background:#263b80;color:white;padding:18px;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+header h2{margin:0;font-size:21px}
+header small{opacity:.85}
+.logout{
+ background:#fff;color:#263b80;border:0;
+ padding:9px 12px;border-radius:7px
+}
+nav{
+ display:flex;gap:7px;padding:10px;
+ background:white;overflow-x:auto;
+ border-bottom:1px solid #e5e8f0
+}
+nav button{
+ white-space:nowrap;border:0;background:#edf0fa;
+ color:#263b80;padding:11px 14px;border-radius:8px
+}
+nav button.active{background:#263b80;color:white}
+.container{max-width:950px;margin:auto;padding:18px}
+.page{display:none}
+.page.active{display:block}
+.card{
+ background:white;padding:18px;border-radius:13px;
+ margin-bottom:14px;border:1px solid #e4e7f0
+}
+.card h3{margin-top:0;color:#263b80}
+.welcome{
+ background:linear-gradient(120deg,#263b80,#6178cb);
+ color:white;padding:24px;border-radius:15px;
+ margin-bottom:18px
+}
+.welcome h2{margin-top:0}
+.stats{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:12px;margin-bottom:16px
+}
+.stat{
+ background:white;padding:17px;border-radius:12px;
+ border:1px solid #e4e7f0
+}
+.stat strong{display:block;font-size:25px;color:#263b80}
+.stat span{font-size:13px;color:#788196}
+input,textarea{
+ width:100%;padding:13px;border:1px solid #dce1ed;
+ border-radius:9px;margin:7px 0 12px;font-size:15px
+}
+textarea{min-height:110px;resize:vertical}
+.subject-grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+ gap:10px;margin:15px 0
+}
+.subject-btn{
+ background:white;border:1px solid #dce1ed;
+ padding:14px 10px;border-radius:10px;
+ color:#263b80;font-weight:bold;text-align:left
+}
+.subject-btn.active{background:#263b80;color:white}
+.lesson{
+ background:white;padding:16px;border-radius:11px;
+ margin-bottom:11px;border:1px solid #e2e6ef
+}
+.lesson h3{color:#263b80;margin:0 0 8px}
+.lesson p{font-size:14px;line-height:1.6;color:#667085}
+.small{font-size:12px;color:#778196}
+.post{
+ background:white;border:1px solid #e1e5ee;
+ padding:16px;border-radius:12px;margin-bottom:12px
+}
+.post p{white-space:pre-wrap;line-height:1.6}
+.post button{margin-top:5px}
+.secondary{
+ background:#edf0fa;color:#263b80;
+ border:0;padding:9px 13px;border-radius:7px
+}
+.danger{background:#ffe9e9;color:#b42318}
+#lessonReader{
+ background:#fff;padding:18px;border-radius:12px;
+ margin-bottom:15px;line-height:1.7
+}
+footer{text-align:center;padding:20px;color:#8992a5;font-size:12px}
+@media(min-width:650px){
+ .stats{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+ <div class="login-card">
+  <h1>📚 StudyConnect</h1>
+  <p>Learn, Share, and Grow Together</p>
+  <h3>Student Login / Register</h3>
+  <input id="nameInput" placeholder="Enter your full name" maxlength="40">
+  <button class="primary full" onclick="login()">Continue</button>
+  <p class="small">No email or password required for this demo.</p>
+ </div>
+</div>
+
+<!-- MAIN WEBSITE -->
+<div id="app" class="hidden">
+
+<header>
+ <div>
+  <h2>📚 StudyConnect</h2>
+  <small>Student Sharing Platform</small>
+ </div>
+ <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<nav>
+ <button class="active" onclick="showPage('dashboard',this)">Dashboard</button>
+ <button onclick="showPage('notes',this)">Study Notes</button>
+ <button onclick="showPage('materials',this)">Learning Materials</button>
+ <button onclick="showPage('share',this)">Sharing Ideas</button>
+ <button onclick="showPage('posts',this)">Student Posts</button>
+ <button onclick="showPage('profile',this)">My Profile</button>
+</nav>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+ <div class="welcome">
+  <h2 id="welcomeName">Welcome!</h2>
+  <p>Welcome to StudyConnect. Learn something new and share your ideas with other students.</p>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><strong>6</strong><span>Core Subjects</span></div>
+  <div class="stat"><strong>50</strong><span>Study Lessons</span></div>
+  <div class="stat"><strong id="postCount">0</strong><span>Shared Posts</span></div>
+  <div class="stat"><strong>6</strong><span>Learning Categories</span></div>
+ </div>
+
+ <div class="card">
+  <h3>📢 Welcome to StudyConnect!</h3>
+  <p>This platform helps students access study notes, learning materials, and ideas shared by fellow learners.</p>
+ </div>
+
+ <div class="card">
+  <h3>📖 Explore Your Subjects</h3>
+  <p>Study your Grade 11 core subjects and review lessons anytime.</p>
+  <button class="primary" onclick="showPage('notes')">Open Study Notes</button>
+ </div>
+
+ <div class="card">
+  <h3>💡 Share Your Ideas</h3>
+  <p>Share your thoughts, questions, and learning experiences.</p>
+  <button class="primary" onclick="showPage('share')">Share an Idea</button>
+ </div>
+</section>
+
+<!-- STUDY NOTES -->
+<section id="notes" class="page">
+ <h2>📚 Grade 11 Study Notes</h2>
+ <p>Choose a subject to explore its lessons.</p>
+ <input id="lessonSearch" placeholder="Search lessons..." oninput="displayLessons()">
+ <div class="subject-grid" id="subjectButtons"></div>
+ <div id="lessonReader" class="hidden"></div>
+ <h3 id="lessonHeading">All Lessons</h3>
+ <div id="lessonList"></div>
+</section>
+
+<!-- LEARNING MATERIALS -->
+<section id="materials" class="page">
+ <h2>📂 Learning Materials</h2>
+ <p>Useful learning resources for students.</p>
+
+ <div class="card">
+  <h3>📘 English Communication Reviewer</h3>
+  <p>Review communication, listening, speaking, and writing skills.</p>
+  <button class="secondary" onclick="openMaterial('English Communication Reviewer','Review the communication process, verbal and nonverbal communication, active listening, public speaking, and writing skills.')">View Material</button>
+ </div>
+
+ <div class="card">
+  <h3>📗 Filipino Communication Reviewer</h3>
+  <p>Review wika, komunikasyon, akademikong pagsulat, at pag-unawa sa binasa.</p>
+  <button class="secondary" onclick="openMaterial('Filipino Communication Reviewer','Pag-aralan ang gamit ng wika, barayti ng wika, antas ng wika, akademikong pagsulat, at pag-unawa sa binasa.')">View Material</button>
+ </div>
+
+ <div class="card">
+  <h3>📐 Mathematics Formula Guide</h3>
+  <p>Review basic formulas and mathematical concepts.</p>
+  <button class="secondary" onclick="openMaterial('Mathematics Formula Guide','Simple Interest: I = P × R × T. Compound Interest: A = P(1 + r/n)^(nt). Review functions, exponential functions, logarithms, and annuities.')">View Material</button>
+ </div>
+
+ <div class="card">
+  <h3>🔬 Science Reviewer</h3>
+  <p>Review matter, cells, ecosystems, force, motion, and energy.</p>
+  <button class="secondary" onclick="openMaterial('Science Reviewer','Study the scientific method, matter, atoms, cells, ecosystems, force and motion, energy transformation, and climate change.')">View Material</button>
+ </div>
+
+ <div class="card">
+  <h3>🎯 Life and Career Skills Guide</h3>
+  <p>Learn about personal development and career preparation.</p>
+  <button class="secondary" onclick="openMaterial('Life and Career Skills Guide','Review self-awareness, goal setting, time management, decision-making, critical thinking, financial literacy, and career exploration.')">View Material</button>
+ </div>
+
+ <div class="card">
+  <h3>🇵🇭 Philippine History Reviewer</h3>
+  <p>Learn about Philippine history, culture, and society.</p>
+  <button class="secondary" onclick="openMaterial('Philippine History Reviewer','Review Philippine history, colonial periods, independence, Filipino culture, government, citizenship, and social issues.')">View Material</button>
+ </div>
+
+ <div id="materialReader" class="card hidden">
+  <button class="secondary" onclick="closeMaterial()">← Back</button>
+  <h3 id="materialTitle"></h3>
+  <p id="materialText"></p>
+ </div>
+</section>
+
+<!-- SHARE IDEAS -->
+<section id="share" class="page">
+ <h2>💡 Share Your Ideas</h2>
+ <p>Share your thoughts, questions, and knowledge with other students.</p>
+
+ <div class="card">
+  <h3>Create a Post</h3>
+  <input id="postTitle" placeholder="Post title">
+  <textarea id="postContent" placeholder="Write your idea, question, or learning experience..."></textarea>
+  <button class="primary full" onclick="createPost()">Publish Post</button>
+ </div>
+</section>
+
+<!-- STUDENT POSTS -->
+<section id="posts" class="page">
+ <h2>📝 Student Posts</h2>
+ <p>Ideas and discussions shared on this device.</p>
+ <div id="postList"></div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+ <h2>👤 My Profile</h2>
+ <div class="card">
+  <h3>Student Information</h3>
+  <p class="small">Your current profile name</p>
+  <h2 id="profileName"></h2>
+  <label>Change your name</label>
+  <input id="newName" placeholder="Enter new name">
+  <button class="primary" onclick="changeName()">Save Changes</button>
+ </div>
+ <div class="card">
+  <h3>About StudyConnect</h3>
+  <p>StudyConnect is a student sharing platform designed to support learning, collaboration, and sharing of educational ideas.</p>
+ </div>
+</section>
+
+</div>
+
+<footer>StudyConnect © 2026 | Student Learning Platform</footer>
+</div>
+
+<script>
+
+/* ACCOUNT */
+let currentUser = localStorage.getItem("sc_user") || "";
+
+function login(){
+ const name=document.getElementById("nameInput").value.trim();
+ if(!name){
+  alert("Please enter your name.");
+  return;
+ }
+ currentUser=name;
+ localStorage.setItem("sc_user",name);
+ startApp();
+}
+
+function startApp(){
+ document.getElementById("loginPage").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+ updateProfile();
+ updatePosts();
+ showSubjects();
+ displayLessons();
+}
+
+function logout(){
+ currentUser="";
+ localStorage.removeItem("sc_user");
+ document.getElementById("app").classList.add("hidden");
+ document.getElementById("loginPage").classList.remove("hidden");
+ document.getElementById("nameInput").value="";
+}
+
+function updateProfile(){
+ document.getElementById("welcomeName").textContent="Welcome, "+currentUser+"!";
+ document.getElementById("profileName").textContent=currentUser;
+ document.getElementById("newName").value=currentUser;
+}
+
+function changeName(){
+ const name=document.getElementById("newName").value.trim();
+ if(!name){alert("Enter a name.");return;}
+ currentUser=name;
+ localStorage.setItem("sc_user",name);
+ updateProfile();
+ updatePosts();
+ alert("Profile updated!");
+}
+
+/* NAVIGATION */
+function showPage(id,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+ if(id==="posts")updatePosts();
+ if(id==="dashboard")updatePosts();
+ window.scrollTo(0,0);
+}
+
+/* LEARNING MATERIALS */
+function openMaterial(title,text){
+ document.getElementById("materialReader").classList.remove("hidden");
+ document.getElementById("materialTitle").textContent=title;
+ document.getElementById("materialText").textContent=text;
+ document.getElementById("materialReader").scrollIntoView({behavior:"smooth"});
+}
+function closeMaterial(){
+ document.getElementById("materialReader").classList.add("hidden");
+}
+
+/* STUDY NOTES */
+const lessons = [
+["Effective Communication","Communication Process","Communication is the process of sharing information, ideas, and feelings. Its elements include sender, message, channel, receiver, and feedback."],
+["Effective Communication","Verbal and Nonverbal Communication","Verbal communication uses spoken or written words. Nonverbal communication uses gestures, facial expressions, eye contact, and body language."],
+["Effective Communication","Types of Communication","Common types include interpersonal, group, public, and mass communication. Each is used in different situations."],
+["Effective Communication","Barriers to Communication","Barriers include noise, language differences, distractions, and unclear messages. Clear language and active listening can help overcome them."],
+["Effective Communication","Active Listening","Active listening means paying attention to the speaker, understanding the message, asking questions, and responding respectfully."],
+["Effective Communication","Public Speaking","Public speaking is presenting ideas to an audience. Preparation, clear speech, confidence, and organization help make a good presentation."],
+["Effective Communication","Writing Skills","Good writing communicates ideas clearly and logically. Examples include essays, letters, reports, and articles."],
+
+["Mabisang Komunikasyon","Gamit at Kahalagahan ng Wika","Ang wika ay ginagamit sa pagpapahayag ng ideya, damdamin, at kaisipan. Mahalaga ito sa pakikipag-ugnayan at pagpapanatili ng kultura."],
+["Mabisang Komunikasyon","Barayti ng Wika","Ang barayti ng wika ay iba't ibang anyo ng wikang ginagamit batay sa lugar, pangkat, edad, at sitwasyon."],
+["Mabisang Komunikasyon","Antas ng Wika","May pormal at di-pormal na antas ng wika. Ang pagpili nito ay nakabatay sa kausap at sitwasyon."],
+["Mabisang Komunikasyon","Berbal at Di-Berbal na Komunikasyon","Ang berbal ay gumagamit ng salita. Ang di-berbal ay gumagamit ng kilos, ekspresyon ng mukha, at iba pang senyas."],
+["Mabisang Komunikasyon","Akademikong Pagsulat","Ito ay pormal na pagsulat na ginagamit sa paaralan at pananaliksik. Dapat itong malinaw, organisado, at may mapagkakatiwalaang sanggunian."],
+["Mabisang Komunikasyon","Pag-unawa sa Binasa","Kabilang dito ang pagtukoy sa pangunahing ideya, mahahalagang detalye, kahulugan ng mga salita, at mensahe ng teksto."],
+["Mabisang Komunikasyon","Pagpapahayag ng Opinyon","Ang opinyon ay sariling pananaw. Dapat itong ipahayag nang malinaw, may dahilan, at may paggalang sa pananaw ng iba."],
+
+["General Mathematics","Functions","A function is a relationship between input and output values. Every input has exactly one output. Example: f(x)=x+2."],
+["General Mathematics","Rational Functions","A rational function is a ratio of polynomial expressions. The denominator must not be zero."],
+["General Mathematics","Exponential Functions","An exponential function has a variable in its exponent. Example: f(x)=2^x. It can describe growth and decay."],
+["General Mathematics","Logarithmic Functions","A logarithm tells the exponent needed to produce a number. Example: log₂8=3 because 2³=8."],
+["General Mathematics","Simple Interest","Simple interest is based on the original amount. Formula: I = P × R × T."],
+["General Mathematics","Compound Interest","Compound interest is calculated on the original amount and accumulated interest. Formula: A = P(1 + r/n)^(nt)."],
+["General Mathematics","Annuities","An annuity is a series of equal payments made at regular intervals, such as regular savings deposits or loan payments."],
+["General Mathematics","Logic and Reasoning","Logic studies correct reasoning. It helps people evaluate statements and reach reasonable conclusions."],
+
+["General Science","Scientific Method","The scientific method involves identifying a problem, gathering information, forming a hypothesis, investigating, analyzing results, and drawing conclusions."],
+["General Science","Matter and Its Properties","Matter is anything that has mass and occupies space. Common states include solid, liquid, gas, and plasma."],
+["General Science","Atoms and Elements","Atoms are the basic units of elements. They contain protons, neutrons, and electrons."],
+["General Science","Cells and Their Functions","Cells are the basic units of living organisms. Important parts include the nucleus, cell membrane, cytoplasm, and mitochondria."],
+["General Science","Ecosystems","An ecosystem includes living organisms and nonliving things interacting in an environment."],
+["General Science","Force and Motion","Force is a push or pull that can change an object's motion. Examples include gravity and friction."],
+["General Science","Energy Transformation","Energy transformation occurs when energy changes form. A light bulb changes electrical energy into light and heat."],
+["General Science","Climate Change","Climate change refers to long-term changes in Earth's temperature and weather patterns."],
+
+["Life and Career Skills","Self-Awareness","Self-awareness means understanding your strengths, weaknesses, interests, values, and emotions."],
+["Life and Career Skills","Goal Setting","Goal setting means identifying what you want to achieve and creating a plan. SMART goals are Specific, Measurable, Achievable, Relevant, and Time-bound."],
+["Life and Career Skills","Time Management","Time management means organizing tasks and using time effectively. Making schedules and setting priorities can help."],
+["Life and Career Skills","Decision-Making","Decision-making involves identifying a problem, considering options, evaluating consequences, and choosing responsibly."],
+["Life and Career Skills","Critical Thinking","Critical thinking means analyzing information and evaluating ideas before making a judgment."],
+["Life and Career Skills","Problem-Solving","Problem-solving involves identifying a challenge, understanding its cause, considering solutions, and evaluating the result."],
+["Life and Career Skills","Financial Literacy","Financial literacy is understanding how to manage money through budgeting, saving, and responsible spending."],
+["Life and Career Skills","Career Exploration","Career exploration means learning about jobs, interests, skills, and educational requirements."],
+["Life and Career Skills","Resume Writing","A resume presents a person's education, skills, achievements, and experiences."],
+["Life and Career Skills","Teamwork and Leadership","Teamwork means cooperating toward a common goal. Leadership means guiding and supporting a group."],
+
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Kahulugan at Kahalagahan ng Kasaysayan","Ang kasaysayan ay pag-aaral sa mga pangyayari sa nakaraan at epekto ng mga ito sa kasalukuyan."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Pinagmulan ng mga Pilipino","Tinatalakay nito ang sinaunang pamayanan, kultura, at pamumuhay sa kapuluan bago dumating ang mga mananakop."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Panahon ng mga Espanyol","Nagkaroon ng mga pagbabago sa relihiyon, pamahalaan, edukasyon, at pamumuhay noong panahon ng pananakop ng Espanya."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Panahon ng mga Amerikano","Nagkaroon ng mga pagbabago sa edukasyon, pamahalaan, at paggamit ng wikang Ingles."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Ikalawang Digmaang Pandaigdig sa Pilipinas","Nagdulot ang digmaan at pananakop ng mga Hapones ng malalaking pagbabago sa buhay ng mga Pilipino."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Kalayaan ng Pilipinas","Idineklara ang kalayaan ng Pilipinas noong Hunyo 12, 1898. Mahalaga ito sa kasaysayan ng bansa."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Kulturang Pilipino","Ang kulturang Pilipino ay binubuo ng mga tradisyon, paniniwala, wika, pagkain, sining, at kaugalian."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Pamahalaan at Mamamayan","May mga tungkulin at karapatan ang mamamayan, kabilang ang pagsunod sa batas at paggalang sa karapatan ng iba."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Mga Isyung Panlipunan","Kabilang sa mga isyung panlipunan ang kahirapan, kawalan ng trabaho, kakulangan sa edukasyon, at mga suliraning pangkapaligiran."],
+["Pag-aaral ng Kasaysayan at Lipunang Pilipino","Pagkamamamayan at Pananagutan","Ang responsableng mamamayan ay gumagalang sa batas, nakikilahok sa komunidad, at tumutulong sa lipunan."]
+];
+
+const subjects=[
+"All Subjects",
+"Effective Communication",
+"Mabisang Komunikasyon",
+"General Mathematics",
+"General Science",
+"Life and Career Skills",
+"Pag-aaral ng Kasaysayan at Lipunang Pilipino"
+];
+
+let selectedSubject="All Subjects";
+
+function showSubjects(){
+ const box=document.getElementById("subjectButtons");
+ box.innerHTML="";
+ subjects.forEach(subject=>{
+  const btn=document.createElement("button");
+  btn.className="subject-btn"+(selectedSubject===subject?" active":"");
+  btn.textContent=subject;
+  btn.onclick=()=>{
+   selectedSubject=subject;
+   closeLesson();
+   showSubjects();
+   displayLessons();
+  };
+  box.appendChild(btn);
+ });
+}
+
+function displayLessons(){
+ const list=document.getElementById("lessonList");
+ const query=document.getElementById("lessonSearch").value.toLowerCase();
+ list.innerHTML="";
+ document.getElementById("lessonHeading").textContent=selectedSubject;
+
+ const filtered=lessons.filter(l=>
+  (selectedSubject==="All Subjects"||l[0]===selectedSubject)&&
+  (l[0]+" "+l[1]+" "+l[2]).toLowerCase().includes(query)
+ );
+
+ if(!filtered.length){
+  list.textContent="No lessons found.";
+  return;
+ }
+
+ filtered.forEach(l=>{
+  const card=document.createElement("div");
+  card.className="lesson";
+  const h=document.createElement("h3");
+  h.textContent=l[1];
+  const small=document.createElement("span");
+  small.className="small";
+  small.textContent=l[0];
+  const p=document.createElement("p");
+  p.textContent=l[2].substring(0,115)+"...";
+  const btn=document.createElement("button");
+  btn.className="primary";
+  btn.textContent="Read Lesson";
+  btn.onclick=()=>openLesson(l);
+  card.append(h,small,p,btn);
+  list.appendChild(card);
+ });
+}
+
+function openLesson(l){
+ const reader=document.getElementById("lessonReader");
+ reader.classList.remove("hidden");
+ reader.innerHTML="";
+ const back=document.createElement("button");
+ back.className="secondary";
+ back.textContent="← Back to Lessons";
+ back.onclick=closeLesson;
+ const h=document.createElement("h2");
+ h.textContent=l[1];
+ const sub=document.createElement("p");
+ sub.className="small";
+ sub.textContent=l[0];
+ const content=document.createElement("p");
+ content.style.lineHeight="1.8";
+ content.textContent=l[2];
+ reader.append(back,h,sub,content);
+ reader.scrollIntoView({behavior:"smooth"});
+}
+
+function closeLesson(){
+ document.getElementById("lessonReader").classList.add("hidden");
+}
+
+/* SHARING IDEAS AND POSTS */
+function getPosts(){
+ try{return JSON.parse(localStorage.getItem("sc_posts")||"[]")}
+ catch(e){return []}
+}
+
+function savePosts(posts){
+ localStorage.setItem("sc_posts",JSON.stringify(posts));
+}
+
+function createPost(){
+ const title=document.getElementById("postTitle").value.trim();
+ const content=document.getElementById("postContent").value.trim();
+
+ if(!title||!content){
+  alert("Please complete the title and your idea.");
+  return;
+ }
+
+ const posts=getPosts();
+ posts.unshift({
+  id:Date.now(),
+  author:currentUser,
+  title:title,
+  content:content,
+  date:new Date().toLocaleString()
+ });
+
+ savePosts(posts);
+ document.getElementById("postTitle").value="";
+ document.getElementById("postContent").value="";
+ alert("Your idea has been published!");
+ updatePosts();
+ showPage("posts");
+}
+
+function updatePosts(){
+ const list=document.getElementById("postList");
+ const posts=getPosts();
+ list.innerHTML="";
+ document.getElementById("postCount").textContent=posts.length;
+
+ if(!posts.length){
+  list.textContent="No posts yet. Be the first to share an idea!";
+  return;
+ }
+
+ posts.forEach(post=>{
+  const card=document.createElement("div");
+  card.className="post";
+
+  const title=document.createElement("h3");
+  title.textContent=post.title;
+
+  const author=document.createElement("div");
+  author.className="small";
+  author.textContent="Posted by "+post.author+" • "+post.date;
+
+  const content=document.createElement("p");
+  content.textContent=post.content;
+
+  card.append(title,author,content);
+
+  if(post.author===currentUser){
+   const del=document.createElement("button");
+   del.className="secondary danger";
+   del.textContent="Delete My Post";
+   del.onclick=()=>deletePost(post.id);
+   card.appendChild(del);
+  }
+
+  list.appendChild(card);
+ });
+}
+
+function deletePost(id){
+ if(!confirm("Delete this post?"))return;
+ const posts=getPosts().filter(p=>p.id!==id);
+ savePosts(posts);
+ updatePosts();
+}
+
+/* START */
+if(currentUser){
+ startApp();
+}
+
+</script>
+</body>
+
